@@ -116,8 +116,9 @@ def criar_documento_externo(info_ambiente, parente_id, caminho):
     documentos = obter_documento(info_ambiente, parente_id, "DocumentoExterno")
     for documento in documentos.values:
         codigo = documento.value[documentos.columns.index("documentPK.documentId")]
-        versao = documento.value[documentos.columns.index("documentPK.version")]
         nome = documento.value[documentos.columns.index("documentDescription")]
+        url = documento.value[documentos.columns.index("phisicalFile")]
+        descricao = documento.value[documentos.columns.index("additionalComments")]
 
         if not nome:
             nome = "Novo documento externo"
@@ -125,11 +126,33 @@ def criar_documento_externo(info_ambiente, parente_id, caminho):
         sub_caminho = caminho / "{} - {}".format(codigo, nome)
 
         print("======= CRIAÇÃO DO DOCUMENTO =======\nPARENTE ID: {}\nID: {}\nCAMINHO: {}\n\n".format(parente_id, codigo, sub_caminho))
-        texto = """
-        URL: 
-        
+        texto = f"""
+        URL: {url}
+        Descrição: {descricao}
         """
-        
+
+        arquivo = open(sub_caminho, "wb")
+        arquivo.write(texto)
+        arquivo.close()
+
+def criar_formulario(info_ambiente, parente_id, caminho):
+    documentos = obter_documento(info_ambiente, parente_id, "Formulario")
+    for documento in documentos.values:
+        codigo = documento.value[documentos.columns.index("documentPK.documentId")]
+        nome = documento.value[documentos.columns.index("documentDescription")]
+        dataset = documento.value[documentos.columns.index("datasetName")]
+
+        if not nome:
+            nome = "Novo formulário"
+
+        sub_caminho = caminho / "{} - {}".format(codigo, nome)
+
+        print("======= CRIAÇÃO DO FORMULÁRIO =======\nPARENTE ID: {}\nID: {}\nCAMINHO: {}\n\n".format(parente_id, codigo, sub_caminho))
+
+
+        arquivo = open(sub_caminho, "wb")
+        arquivo.write(texto)
+        arquivo.close()
 
 def main():
     cfg = configparser.ConfigParser()
